@@ -54,7 +54,7 @@ pub async fn send_request_to_wordpress(wordpress_site: &str, plain_text: bool) -
 
             let post = Post {
                 title: post_title.to_string(),
-                content: content,
+                content,
                 url: post_url,
                 id: post_id,
             };
