@@ -47,13 +47,6 @@ Create a database in postgresql:
 CREATE DATABASE pracker;
 ```
 
-
-Initiate the database:
-
-```bash
-diesel setup
-```
-
 Run migration:
 ```bash
 diesel migration run
