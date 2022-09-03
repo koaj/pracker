@@ -1,14 +1,9 @@
 use anyhow::Result;
 use nanohtml2text::html2text;
-use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
-struct Post {
-    title: String,
-    content: String,
-    url: String,
-    id: i64,
-}
+use crate::db::models::*;
+use crate::{db::database::establish_connection, Config};
+use diesel::RunQueryDsl;
 
 pub fn standard_site_name(site_address: &str) -> Result<&str> {
     let standard_name = site_address
@@ -19,13 +14,22 @@ pub fn standard_site_name(site_address: &str) -> Result<&str> {
     Ok(standard_name)
 }
 
-pub async fn send_request_to_wordpress(wordpress_site: &str, plain_text: bool) -> Result<()> {
-    let wordpress_site_name = standard_site_name(wordpress_site)?;
+pub async fn send_request_to_wordpress(
+    // wordpress_site: &str,
+    // plain_text: bool,
+    // insert_to_db: bool,
+    config: Config,
+) -> Result<()> {
+    let wordpress_site_name = standard_site_name(config.sitename.as_str())?;
 
     let mut page = 1;
 
     loop {
-        let url = format!("{}/wp-json/wp/v2/posts/?page={}", wordpress_site, page);
+        let url = format!(
+            "{}/wp-json/wp/v2/posts/?page={}",
+            config.sitename.as_str(),
+            page
+        );
 
         print!("{:?}", page);
 
@@ -45,18 +49,32 @@ pub async fn send_request_to_wordpress(wordpress_site: &str, plain_text: bool) -
 
             let post_in_html = response_json[i]["content"]["rendered"].as_str().unwrap();
 
-            let content = if plain_text {
+            let content = if config.plain_text {
                 html2text(post_in_html)
             } else {
                 post_in_html.to_string()
             };
 
-            let post = Post {
-                title: post_title.to_string(),
-                content,
-                url: post_url,
-                id: post_id,
+            let post = NewPost {
+                title: post_title,
+                content: content.as_str(),
+                url: post_url.as_str(),
+                created_at: chrono::Utc::now().naive_utc(),
+                updated_at: chrono::Utc::now().naive_utc(),
             };
+
+            if config.insert_to_db {
+                // Save post to database
+                use crate::db::schema::posts::dsl::*;
+
+                let connect = &mut establish_connection();
+
+                let _ = diesel::insert_into(posts)
+                    .values(&post)
+                    .on_conflict_do_nothing()
+                    .execute(connect);
+            }
+
             println!("{post:?}");
         }
         page += 1;

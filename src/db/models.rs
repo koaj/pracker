@@ -13,9 +13,11 @@ pub struct Post {
 }
 
 #[derive(Insertable, Debug)]
-#[table_name = "posts"]
-pub struct NewPost {
-    pub title: String,
-    pub content: String,
-    pub url: String,
+#[diesel(table_name = posts)]
+pub struct NewPost<'a> {
+    pub title: &'a str,
+    pub content: &'a str,
+    pub url: &'a str,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: chrono::NaiveDateTime,
 }
