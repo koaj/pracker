@@ -15,6 +15,8 @@ struct Args {
     /// Option to conver HTML to plain text
     #[clap(short, long)]
     plain_text: bool,
+    #[clap(flatten)]
+    verbose: clap_verbosity_flag::Verbosity,
 }
 
 #[tokio::main]
