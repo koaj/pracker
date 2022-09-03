@@ -65,7 +65,6 @@ pub async fn send_request_to_wordpress(wordpress_site: &str, plain_text: bool) -
     Ok(())
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;

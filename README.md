@@ -1,5 +1,9 @@
-How to run wordpress content crawler:
+How does it work?
+-----------------
+Pracker working based on the wordpress rest api `wp-json/wp/v2/posts/`. Please make sure that your wordpress site has enabled the rest api. You can add `wp-json/wp/v2/posts/` to the end of your wordpress site url to check if it is enabled. If you see a json response, then it is enabled. If you see a 404 error, then it is not enabled. You can enable it by installing the [WP REST API](https://wordpress.org/plugins/rest-api/) plugin.
 
+
+How to run wordpress content crawler:
 
 
 ```bash
@@ -34,3 +38,6 @@ Post {
     id: 1
 }
 ```
+
+
+If you are looking for more options, please run `cargo run -- --help` to see all the options.
