@@ -10,12 +10,11 @@ struct Post {
     id: i64,
 }
 
-pub fn standard_site_name(site_address: &str) -> Result<String> {
+pub fn standard_site_name(site_address: &str) -> Result<&str> {
     let standard_name = site_address
         .trim_start_matches("https://")
         .trim_start_matches("http://")
-        .trim_end_matches('/')
-        .replace('.', "_");
+        .trim_end_matches('/');
 
     Ok(standard_name)
 }
@@ -64,4 +63,17 @@ pub async fn send_request_to_wordpress(wordpress_site: &str, plain_text: bool) -
     }
 
     Ok(())
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_standard_site_name() {
+        let site_address = "https://www.example.com/";
+        let standard_name = standard_site_name(site_address).unwrap();
+        assert_eq!(standard_name, "www.example.com");
+    }
 }
