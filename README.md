@@ -57,9 +57,9 @@ diesel migration run
 ```
 
 
-Store data into the database:
+Insert data into the database:
 ```bash
-cargo run -- -s https://wordpres-site-example.com/ -d
+cargo run -- -s https://wordpres-site-example.com/ -i
 ```
 
 
