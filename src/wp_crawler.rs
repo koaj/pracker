@@ -14,12 +14,7 @@ pub fn standard_site_name(site_address: &str) -> Result<&str> {
     Ok(standard_name)
 }
 
-pub async fn send_request_to_wordpress(
-    // wordpress_site: &str,
-    // plain_text: bool,
-    // insert_to_db: bool,
-    config: Config,
-) -> Result<()> {
+pub async fn send_request_to_wordpress(config: Config) -> Result<()> {
     let wordpress_site_name = standard_site_name(config.sitename.as_str())?;
 
     let mut page = 1;
@@ -44,7 +39,7 @@ pub async fn send_request_to_wordpress(
 
         for i in 0..number_of_posts {
             let post_id = response_json[i]["id"].as_i64().unwrap();
-            let post_url = format!("{}/?p={post_id}", wordpress_site_name.replace('_', "."));
+            let post_url = format!("{}/?p={post_id}", wordpress_site_name);
             let post_title = response_json[i]["title"]["rendered"].as_str().unwrap();
 
             let post_in_html = response_json[i]["content"]["rendered"].as_str().unwrap();
@@ -59,8 +54,6 @@ pub async fn send_request_to_wordpress(
                 title: post_title,
                 content: content.as_str(),
                 url: post_url.as_str(),
-                created_at: chrono::Utc::now().naive_utc(),
-                updated_at: chrono::Utc::now().naive_utc(),
             };
 
             if config.insert_to_db {
@@ -78,6 +71,9 @@ pub async fn send_request_to_wordpress(
             println!("{post:?}");
         }
         page += 1;
+        if number_of_posts == 0 {
+            break;
+        }
     }
 
     Ok(())
