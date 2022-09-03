@@ -40,11 +40,15 @@ Post {
 ```
 
 
-##Store the output into the DB:
+###Store the output into the DB:
 
 Create a database in postgresql:
 ```sql
 CREATE DATABASE pracker;
+```
+
+```bash
+mv env.sample .env
 ```
 
 Run migration:
@@ -53,8 +57,9 @@ diesel migration run
 ```
 
 
+Store data into the database:
 ```bash
-mv env.sample .env
+cargo run -- -s https://wordpres-site-example.com/ -d
 ```
 
 
