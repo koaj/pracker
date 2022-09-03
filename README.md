@@ -40,4 +40,29 @@ Post {
 ```
 
 
+##Store the output into the DB:
+
+Create a database in postgresql:
+```sql
+CREATE DATABASE pracker;
+```
+
+
+Initiate the database:
+
+```bash
+diesel setup
+```
+
+Run migration:
+```bash
+diesel migration run
+```
+
+
+```bash
+mv env.sample .env
+```
+
+
 If you are looking for more options, please run `cargo run -- --help` to see all the options.
