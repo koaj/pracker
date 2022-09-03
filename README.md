@@ -40,7 +40,7 @@ Post {
 ```
 
 
-###Store the output into the DB:
+### Store the output into the DB:
 
 Create a database in postgresql:
 ```sql
@@ -60,6 +60,11 @@ diesel migration run
 Insert data into the database:
 ```bash
 cargo run -- -s https://wordpres-site-example.com/ -i
+```
+
+Insert plain text into the database:
+```terminal
+cargo run -- -s https://wordpres-site-example.com/ -ip
 ```
 
 
