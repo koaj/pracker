@@ -1,5 +1,6 @@
 use anyhow::Result;
 use nanohtml2text::html2text;
+use std::io::Write;
 
 use crate::db::models::*;
 use crate::{db::database::establish_connection, Config};
@@ -15,6 +16,8 @@ pub fn standard_site_name(site_address: &str) -> Result<&str> {
 }
 
 pub async fn send_request_to_wordpress(config: Config) -> Result<()> {
+    let stdout = std::io::stdout();
+    let mut stdout_lock = stdout.lock();
     let wordpress_site_name = standard_site_name(config.sitename.as_str())?;
 
     let mut page = 1;
@@ -25,8 +28,6 @@ pub async fn send_request_to_wordpress(config: Config) -> Result<()> {
             config.sitename.as_str(),
             page
         );
-
-        print!("{:?}", page);
 
         let server_response = reqwest::get(&url).await?;
         if server_response.status() != 200 {
@@ -68,7 +69,7 @@ pub async fn send_request_to_wordpress(config: Config) -> Result<()> {
                     .execute(connect);
             }
 
-            println!("{post:?}");
+            writeln!(stdout_lock, "{:?}", post)?;
         }
         page += 1;
         if number_of_posts == 0 {
