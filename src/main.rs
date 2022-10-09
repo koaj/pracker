@@ -32,7 +32,7 @@ pub struct Config {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let args = Args::from_args();
+    let args = Args::parse();
     let sitename = args.sitename;
 
     let plain_text = args.plain_text;

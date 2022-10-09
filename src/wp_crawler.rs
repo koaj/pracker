@@ -30,6 +30,10 @@ pub async fn send_request_to_wordpress(config: Config) -> Result<()> {
         );
 
         let server_response = reqwest::get(&url).await?;
+        if page == 1 && server_response.status() == 404 {
+            writeln!(stdout_lock, "REST API is not enable on this site")?;
+            break;
+        }
         if server_response.status() != 200 {
             break;
         }
